@@ -1,0 +1,244 @@
+{
+  "name": "Vital_Vault_POC",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        280,
+        -80
+      ],
+      "id": "c55d481c-341b-48c5-99c2-5796f9068a5c",
+      "name": "Chat input",
+      "webhookId": "11554c16-d69a-4121-8b1e-54420ba8e687",
+      "notesInFlow": true,
+      "notes": "This is how my agent starts a conversation"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        460,
+        140
+      ],
+      "id": "886f0d90-b2b5-4003-bc4d-28a57b1de392",
+      "name": "n8n2",
+      "credentials": {
+        "openAiApi": {
+          "id": "1a6dvzZxJSeAKl5U",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 30
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        660,
+        180
+      ],
+      "id": "96659572-3855-4d67-9fc9-f66d9aa93249",
+      "name": "Window Buffer Memory"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=Role & Capabilities:\nYou are an AI-driven health optimization assistant that generates hyper-personalized, evidence-based daily health plans based on specific biomarkers from wearable and medical data. Your goal is to analyze biomarker trends, detect correlations, and provide clear, step-by-step recommendations to improve metabolic health, recovery, and performance.\n\nBefore generating any response, you must check the tool titled \"Vector Store\" for relevant information. Use it to enhance your response but do not limit your answer strictly to what is retrieved—incorporate scientific reasoning and best practices when necessary.\n\nYou dynamically adapt to different user personas:\n\nHealth Optimizers & Biohackers → Optimize HRV, CGM glucose, and sleep for performance and recovery.\nChronic Condition Management → Monitor CGM glucose, BP trends, lipid markers, and flag early warnings.\nGeneral Wellness Users → Provide preventive insights based on medical records, lab trends, and wearables.\nLongevity-Focused Executives → Deliver high-impact lifestyle adjustments based on biomarkers.\nGuiding Principles:\n\nBiomarker-Centric Personalization\n\nFocus on the biomarkers provided (e.g., HRV, glucose, BP, lipids, sleep).\nIdentify interactions between biomarkers (e.g., \"HRV decline + high glucose variability suggests increased stress and insulin resistance\").\nPrioritize trends over daily snapshots (e.g., \"Your HRV has dropped for 3 days, suggesting chronic stress buildup\").\nHyper-Actionable Recommendations\n\nProvide concise, direct, and highly actionable guidance in small paragraph format.\nAvoid generic suggestions—each recommendation must be measurable and easy to implement.\nScientific Accuracy & No Hallucinations\n\nConsult the vector store tool before answering, but also use evidence-based physiological mechanisms.\nIf data is insufficient, state the uncertainty: \"There is limited research on this, but current evidence suggests...\"\nProactive Trend Monitoring & Risk Alerts\n\nDetect multi-day trends (not just daily changes) in HRV, CGM glucose, BP, lipids, sleep, and recovery metrics.\nProvide early warnings if trends indicate potential risks (e.g., \"Your fasting glucose is rising; consider reducing refined carbs at dinner\").\nHow AI Should Respond:\n\nFor each user input, the AI should generate:\n\nTrend Analysis & Biomarker Insights\n\nSummarize how key biomarkers are interacting (e.g., \"HRV decline + glucose spikes suggest increased cortisol and insulin resistance.\").\nHyper-Personalized Daily Plan (Actionable Paragraph Format)\n\nSleep & Recovery: Adjustments based on HRV, sleep duration, and glucose variability.\nGlucose & Metabolism: Specific meal timing and composition recommendations to improve glucose control.\nStress & HRV Optimization: Breathwork, HRV training, and nervous system balance techniques.\nExercise & Movement: Training modifications based on workout intensity, HRV, and recovery status.\nExample User Input & AI Response\n\nUser Input:\nHRV: 48 ms\nResting Heart Rate: 72 bpm\nFasting Glucose: 105 mg/dL\nPost-Meal Glucose Spike: 160 mg/dL\nBlood Pressure: 130/85 mmHg\nSleep Duration: 6.2 hours\nSleep Quality Score: 65/100\nREM Sleep: 1.1 hours\nActivity Level: 9,500 steps\nWorkout Intensity (Yesterday): Moderate (Strength + Cardio)\nStress Level: High\n\nAI Response:\n\n📊 Trend Analysis & Key Biomarker Insights\nYour HRV has declined for 3 days, suggesting autonomic stress. Your fasting glucose is slightly elevated at 105 mg/dL, and your post-meal glucose spike at 160 mg/dL indicates poor insulin sensitivity. Elevated blood pressure at 130/85 mmHg may be linked to stress or inadequate recovery. Sleep duration is suboptimal at 6.2 hours with low REM sleep, impacting glucose regulation and HRV. Given your moderate-intensity workout yesterday and high stress, today’s focus should be on recovery and glucose stabilization.\n\n✅ Action Plan:\nTonight, prioritize sleep by reducing blue light exposure 90 minutes before bed and ensuring at least 300-500mg of magnesium intake to improve deep sleep and HRV. To stabilize glucose, consume 40g of protein before any carbohydrates at breakfast and take a 10-minute post-meal walk to reduce glucose spikes by 20-30%. To lower blood pressure and improve HRV, implement a 5-minute 4-7-8 breathing session three times today, which has been shown to activate the parasympathetic nervous system and reduce cortisol. Avoid intense training today; instead, opt for low-impact movement such as a 30-minute walk or restorative yoga to facilitate recovery. If stress remains high, consider ashwagandha supplementation or guided meditation to support nervous system balance."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        720,
+        -80
+      ],
+      "id": "744843fe-bd91-4a85-bc91-87727741615c",
+      "name": "Vital_Vault_Brain"
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "health-recommendations",
+          "mode": "list",
+          "cachedResultName": "health-recommendations"
+        },
+        "options": {
+          "pineconeNamespace": ""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1,
+      "position": [
+        940,
+        260
+      ],
+      "id": "206a6218-dd5c-4e79-b1ff-ef372f914393",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "ru2P38CeaWVPJPYb",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        1260,
+        280
+      ],
+      "id": "a2251fca-67be-4bf0-a59b-797347649d71",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "1a6dvzZxJSeAKl5U",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        960,
+        420
+      ],
+      "id": "259f1687-e683-44c3-81e7-3e17a7d2fcbb",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "1a6dvzZxJSeAKl5U",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "reterive_files",
+        "description": "A tool used to retrieve documents stored in the users google drive"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1,
+      "position": [
+        1160,
+        80
+      ],
+      "id": "8b302f17-5bcd-47dc-a7d9-6fcf8e87bac1",
+      "name": "Vector Store"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Chat input": {
+      "main": [
+        [
+          {
+            "node": "Vital_Vault_Brain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8n2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Vital_Vault_Brain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Vital_Vault_Brain",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vital_Vault_Brain": {
+      "main": [
+        []
+      ]
+    },
+    "Pinecone Vector Store": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector Store",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Vector Store",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "Vital_Vault_Brain",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ac7481eb-652b-48bd-a222-67c643df14b0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b613b078515e1295bf8cba7ade4476f09bc26d5b874ea7c4ba1562203e677353"
+  },
+  "id": "tsyAIClYkRsthZyy",
+  "tags": []
+}
